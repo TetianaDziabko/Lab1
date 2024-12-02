@@ -1,0 +1,68 @@
+using AnalaizerClassLibrary;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+
+namespace AnalaizerClassLibraryTests
+{
+    [TestClass]
+    public class UnitTest1
+    {
+        public TestContext TestContext { get; set; }
+
+        [DataSource("System.Data.SqlClient", @"Data Source=(localdb)\mssqllocaldb;AttachDbFilename=C:\Users\Tania\AnalaizerClassTests.mdf;Integrated Security=True;Connect Timeout=30", "TestsData", DataAccessMethod.Sequential)]
+        [TestMethod]
+        public void IsOperator_FromDB()
+        {
+            // Arrange
+            string symbol = (string)TestContext.DataRow["Symbol"];
+            bool expectedIsOperator = (bool)TestContext.DataRow["IsOperator"];
+
+            // Act
+            bool actualIsOperator = AnalaizerClass.IsOperator(symbol);
+
+            // Assert
+            Assert.AreEqual(expectedIsOperator, actualIsOperator);
+        }
+
+        [TestMethod]
+        public void IsOperator_ReturnsTrueForStringLengthEqual1()
+        {
+            // Arrange
+            string symbol = "+"; // Рядок довжиною 1 символ
+
+            // Act
+            bool result = AnalaizerClass.IsOperator(symbol);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestIsDelimeter_ReturnsFalseForNonSpaceCharacter()
+        {
+            //Arrange
+            char nonSpace = ',';
+
+            //Act
+            bool result = AnalaizerClass.IsDelimeter(nonSpace);
+
+            //Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TestIsDelimeter_ReturnsTrueForSpace()
+        {
+            // Arrange
+            char space = ' ';
+
+            // Act
+            bool result = AnalaizerClass.IsDelimeter(space);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+    }
+}
